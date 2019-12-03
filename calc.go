@@ -46,11 +46,6 @@ func Question(q string, typestring string) float64 {
 
 	fmt.Printf("%s: ", q)
 
-	if typestring != "int" && typestring != "float" {
-		fmt.Println("int, floatのタイプを選択する必要があります")
-  	os.Exit(1)
-	}
-
 	integer := 0
 	float := 0.0
 	var err error
@@ -67,6 +62,9 @@ func Question(q string, typestring string) float64 {
 		} else if typestring == "float" {
 			// 小数値に変換
 			float, err = strconv.ParseFloat(scanner.Text(), 64)
+		} else {
+			fmt.Println("int, floatのタイプを選択する必要があります")
+			os.Exit(1)
 		}
 
 		if err != nil {
