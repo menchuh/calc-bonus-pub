@@ -34,7 +34,7 @@ func main() {
 
 	// 欠勤
 
-  // 賞与
+	// 賞与
 	result := int(x + y + z)
 
 	// 結果表示
@@ -81,6 +81,6 @@ func Question(q string, typestring string) float64 {
 
 	if typestring == "int" {
 		return float64(integer)
-	} 
+	}
 	return float
 }
