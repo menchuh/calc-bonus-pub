@@ -12,34 +12,38 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"strconv"
 )
 
+type Strings struct {
+	Messages []string `json:"messages"`
+	Types []string `json:"types"`
+}
+
 func main() {
 
-	base := Question("基本給はいくらですか？", "int")
-	month := Question("基本給比例分月数はいくつですか？", "float")
-	// 基本給比例分
+	displayStrings := Readfile("./config/strings.json")
+
+	base := Question(displayStrings.Messages[0], "int")
+	month := Question(displayStrings.Messages[1], "float")
 	x := base * month
 
-	coefficient := Question("評語に基づく係数はいくつですか？", "int")
-	unitPrice := Question("係数単価はいくらですか？", "int")
-	// 成果反映分
+	coefficient := Question(displayStrings.Messages[2], "int")
+	unitPrice := Question(displayStrings.Messages[3], "int")
 	y := coefficient * unitPrice
 
-	// 専門職手当
-	z := Question("専門職手当はいくらですか？", "int")
-
-	// 欠勤
+	z := Question(displayStrings.Messages[4], "int")
 
 	// 賞与
 	result := int(x + y + z)
 
 	// 結果表示
 	fmt.Printf("あなたの賞与は、%d円 です。\n", result)
-	fmt.Printf("内訳 基本給比例分:%d円, 成果反映文:%d円, 専門職手当:%d円\n", int(x), int(y), int(z))
+	fmt.Printf("内訳 %s:%d円, %s:%d円, %s:%d円\n", displayStrings.Types[0], int(x), displayStrings.Types[1], int(y), displayStrings.Types[2], int(z))
 }
 
 func Question(q string, typestring string) float64 {
@@ -83,4 +87,23 @@ func Question(q string, typestring string) float64 {
 		return float64(integer)
 	}
 	return float
+}
+
+func Readfile(f string) Strings {
+
+	// jsonファイル読み込み
+	raw, err := ioutil.ReadFile(f)
+    if err != nil {
+        fmt.Println(err.Error())
+        os.Exit(1)
+    }
+
+	var data Strings
+	json.Unmarshal(raw, &data)
+	if err != nil {
+        fmt.Println(err.Error())
+		os.Exit(1)
+    }
+
+	return data
 }
